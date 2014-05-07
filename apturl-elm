@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #apturl front end written in elementary
 #
 #Written by: Jeff Hoogland
@@ -387,15 +388,21 @@ class MainWin(StandardWindow):
         self.app.packageObj.mark_install()
         self.app.installUpdates()
         
-    def installDone(self):
-        self.flip.go(ELM_FLIP_ROTATE_YZ_CENTER_AXIS)
+    def installDone(self, already=False):
         self.desFrame.delete()
-        self.label.text = "<b>Package successfully installed.</b>"
+        
+        if not already:
+            self.flip.go(ELM_FLIP_ROTATE_YZ_CENTER_AXIS)
+            self.label.text = "<b>Package successfully installed.</b>"
+            
+            self.installButton.text = "Info"
+            self.installButton.callback_pressed_del(self.installPressed)
+            self.installButton.callback_pressed_add(self.innerWinShow)
+        else:
+            self.label.text = "<b>Package is already installed.</b>"
+            self.installButton.delete()
         
         self.cancelButton.text = "Close"
-        self.installButton.text = "Info"
-        self.installButton.callback_pressed_del(self.installPressed)
-        self.installButton.callback_pressed_add(self.innerWinShow)
 
     def showDialog(self, title, msg):
         dia = Popup(self)
@@ -428,7 +435,10 @@ class apturl(object):
     def setPackageInfo(self, packageName):
         self.packageObj = self.apt.cache[packageName]
         self.packageVersion = self.apt.cache[packageName].versions[0]
-        self.win.setPackageInfo(packageName, self.apt.cache[packageName].versions[0].description)
+        if not self.packageObj.is_installed:
+            self.win.setPackageInfo(packageName, self.apt.cache[packageName].versions[0].description)
+        else:
+            self.win.installDone(already=True)
 
     def updateStatus(self):
         global progressque
@@ -443,7 +453,7 @@ class apturl(object):
         return True
         
     def installDone(self, result):
-        elementary.exit()
+        pass
 
     def checkChange(self, obj):
         packageName = obj.data['packageName']
@@ -475,7 +485,7 @@ class apturl(object):
                     self.packagesToUpdate[pak.name]['check'].text = "dep"
 
     def installUpdates(self):
-        self.win.statusLabel.text = "<i>Installing selected packages...</i>"
+        self.win.statusLabel.text = "<i>Installing package...</i>"
         self.win.flip.go(ELM_FLIP_ROTATE_YZ_CENTER_AXIS)
         self.apt.run("installUpdates", self.installDone)
 
