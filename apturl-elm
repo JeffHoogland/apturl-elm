@@ -512,6 +512,9 @@ if __name__ == "__main__":
     
     package = args.split(":")[1]
     
+    if package.startswith("///"):
+		package = package[3:]
+    
     if "?" in package:
         refresh = package.split("?")[1]
         package = package.split("?")[0]
