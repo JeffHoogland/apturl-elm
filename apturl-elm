@@ -12,7 +12,7 @@ from efl.elementary.button import Button
 from efl.elementary.toolbar import Toolbar, ELM_TOOLBAR_SHRINK_MENU, \
     ELM_OBJECT_SELECT_MODE_NONE
 from efl.elementary.frame import Frame
-from efl.elementary.label import Label
+from efl.elementary.label import Label, ELM_WRAP_WORD
 from efl.elementary.scroller import Scroller
 from efl.elementary.check import Check
 from efl.elementary.progressbar import Progressbar
@@ -342,7 +342,7 @@ class MainWin(StandardWindow):
         self.currentDescription = Label(self,
                                         size_hint_weight=FILL_BOTH)
         self.currentDescription.text = "Select a package for information"
-        self.currentDescription.line_wrap_set(True)
+        self.currentDescription.line_wrap_set(ELM_WRAP_WORD)
         self.currentDescription.show()
 
         self.desFrame = Frame(self, size_hint_weight=EXPAND_HORIZ,
