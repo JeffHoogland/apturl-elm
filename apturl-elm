@@ -42,7 +42,7 @@ class MainWin(StandardWindow):
         
         # create the main window
         StandardWindow.__init__(self, "apturl-elm", "Bodhi Application Installer",
-                                autodel=True, size=(600, 250))
+                                autodel=True, size=(500, 225))
         
         self.callback_delete_request_add(lambda o: elementary.exit())
         self.app = app
